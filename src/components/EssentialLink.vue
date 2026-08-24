@@ -1,6 +1,6 @@
 <template>
-  <q-item clickable tag="a" target="_blank" :href="link">
-    <q-item-section v-if="icon" avatar>
+  <q-item clickable v-ripple :to="link">
+    <q-item-section v-if="icon" class="text-dark" avatar>
       <q-icon :name="icon" />
     </q-item-section>
 

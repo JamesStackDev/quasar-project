@@ -5,13 +5,15 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('@/layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('@/pages/IndexPage.vue') },
-      { path: 'second', component: () => import('@/pages/SecondPage.vue') },
+      { path: '', component: () => import('@/pages/IndexPage.vue'), meta: { requiresAuth: true} },
+      { path: 'tasks', component: () => import('@/pages/TasksPage.vue'), meta: { requiresAuth: true} },
     ],
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
+  {
+    path: '/login',
+    component: () => import('@/layouts/components/AuthLayout.vue'),
+    children: [{ path: '', component: () => import('@/pages/auth/LoginPage.vue') }],
+  },
   {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/ErrorNotFound.vue'),
