@@ -13,11 +13,18 @@ export async function login(email: string, password: string): Promise<string> {
 
     const token = 'token-fake-123';
     localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify({id: user.id, name: user.name}))
     return token;
   }
 
+export function getUser(): {  id: number, name: string } | null {
+  const raw = localStorage.getItem('user')
+  return raw ? JSON.parse(raw) : null
+} 
+
 export function logout(): void {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
   }
 
 export function getToken(): string | null {

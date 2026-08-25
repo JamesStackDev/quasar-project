@@ -1,17 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="bg-orange-500 p-6" elevated>
-      <q-toolbar>
 
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleDrawer" />
-
-        <q-toolbar-title> Tarefa Fakes </q-toolbar-title>
-
-        <q-btn @click="handleLogout"  class="bg-red-500">Logout</q-btn>
-
-      </q-toolbar>
-    </q-header>
-
+    <MainHeader @toggle-drawer="toggleDrawer" />
     <q-drawer v-model="leftDrawerOpen" :mini="miniState" show-if-above bordered>
       <q-list>
         <q-item-label header> Tasks Acess </q-item-label>
@@ -31,18 +21,12 @@
 import { ref } from 'vue';
 import EssentialLink, { type EssentialLinkProps } from '@/components/EssentialLink.vue';
 import { useQuasar } from 'quasar';
-import { logout } from '@/services/AuthService';
-import { useRouter } from 'vue-router';
+import MainHeader from './components/MainHeader.vue';
 
 const $q = useQuasar();
 const miniState = ref(true)
 const leftDrawerOpen = ref(false);
-const router = useRouter();
 
-async function handleLogout() {
-  logout()
-  await router.push('/login')
-}
 
 function toggleDrawer() {
   if ($q.screen.gt.xs) {
