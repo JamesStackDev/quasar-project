@@ -3,24 +3,28 @@
 
         <div class="flex justify-between items-center mb-4">
             <div class="text-xl font-bold">Tasks</div>
-            <q-btn label="New Task" color="primary" @click="openCreate"/>
+            <q-btn label="New Task" color="primary" @click="openCreate" />
         </div>
 
-        <q-input v-model="search" label="Search" dense clearable>
-            <template #prepend>
-                <q-icon name="search"/>
+        <q-table :rows="taskStore.myTasks" :columns="columns" row-key="id" :loading="loading" :filter="search" grid
+            hide-header>
+            <template #item="props">
+                <q-card class="w-full mb-4 p-4 cursor-pointer" @click="goToDetail(props.row.id)">
+                    <div class="flex justify-between items-start">
+                        <div class="text-primary font-bold text-lg">{{ props.row.title }}</div>
+                        <div @click.stop>
+                            <q-btn flat round dense icon="edit" @click="openEdit(props.row)" />
+                            <q-btn flat round dense icon="delete" color="negative"
+                                @click="handleDelete(props.row.id)" />
+                        </div>
+                    </div>
+                    <p class="text-body2">{{ props.row.description }}</p>
+                    <div class="flex justify-between text-caption text-grey">
+                        <span>Term: {{ props.row.term }}</span>
+                        <span>{{ props.row.conclusion ? 'Done' : 'Pending' }}</span>
+                    </div>
+                </q-card>
             </template>
-        </q-input>
-
-        <q-table :rows="taskStore.tasks" :columns="columns" row-key="id" :loading="loading" :filter="search">
-            
-            <template #body-cell-actions="props">
-                <q-td :props="props">
-                    <q-btn flat round icon="edit" @click="openEdit(props.row)"/>
-                    <q-btn flat round icon="delete" color="negative" @click="handleDelete(props.row.id)"/>
-                </q-td>
-            </template>
-
         </q-table>
 
 
@@ -33,18 +37,18 @@
 
                 <q-card-section>
                     <q-form class="q-gutter-md" @submit="handleSubmit">
-                        
-                        <q-input v-model="form.title" label="Title"/>
-                        <q-input v-model="form.description" label="Description"/>
+
+                        <q-input v-model="form.title" label="Title" />
+                        <q-input v-model="form.description" label="Description" />
 
 
                         <q-input v-model="form.term" label="Term">
                             <template #append>
                                 <q-icon name="event" class="cursor-pointer">
-                                    <q-popup-proxy cover transition-show="scale"  transition-hide="scale">
+                                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                                         <q-date v-model="form.term" mask="YYYY-MM-DD">
                                             <div class="row items-center justify-end">
-                                                <q-btn v-close-popup label="close" color="negative" flat/>
+                                                <q-btn v-close-popup label="close" color="negative" flat />
                                             </div>
                                         </q-date>
                                     </q-popup-proxy>
@@ -52,7 +56,7 @@
                             </template>
                         </q-input>
 
-                        <q-btn type="submit" label="Save" color="primary" class="full-width"/>
+                        <q-btn type="submit" label="Save" color="primary" class="full-width" />
                     </q-form>
                 </q-card-section>
 
@@ -65,17 +69,35 @@
 
 <script setup lang="ts">
 import { useTaskStore } from '@/stores/task-store';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import type { QTableColumn } from 'quasar';
 import type { Task } from '@/types/interfaces/Tasks';
 import { triggerNegative, triggerSuccess } from '@/utils/Notify';
+import { useRoute, useRouter } from 'vue-router';
+import { getUser } from '@/services/AuthService';
 
 const taskStore = useTaskStore();
-const search = ref('');
 const loading = ref(true);
 const dialogOpen = ref(false);
 const isEditing = ref(false)
-const editingId = ref<number | null>(null)
+const editingId = ref<string | null>(null)
+const route = useRoute()
+const router = useRouter()
+
+async function goToDetail(id: string) {
+    await router.push(`/tasks/${id}`)
+}
+
+
+const search = ref((route.query.q as string) || '')
+
+watch(
+    () => route.query.q,
+    (newValue) => {
+        search.value = (newValue as string) || ''
+    }
+)
+
 
 const form = reactive({
     title: '',
@@ -110,15 +132,15 @@ function openEdit(task: Task) {
     form.term = task.term
     form.conclusion = task.conclusion
     dialogOpen.value = true
-} 
+}
 
 async function handleSubmit() {
     try {
-        if( isEditing.value && editingId.value !== null ) {
-            await taskStore.editTask(editingId.value, {...form})
+        if (isEditing.value && editingId.value !== null) {
+            await taskStore.editTask(editingId.value, { ...form })
             triggerSuccess('Taks Updated')
         } else {
-            await taskStore.addTask({...form})
+            await taskStore.addTask({ ...form, authorId: getUser()!.id })
             triggerSuccess('Task Created')
         }
         dialogOpen.value = false
@@ -127,7 +149,7 @@ async function handleSubmit() {
     }
 }
 
-async function handleDelete(id: number) {
+async function handleDelete(id: string) {
     try {
         await taskStore.removeTask(id)
         triggerSuccess('Task deleted')
@@ -135,14 +157,14 @@ async function handleDelete(id: number) {
         triggerNegative('Something went wrong')
     }
 }
-  
+
 onMounted(async () => {
-   try{
-    await taskStore.fetchTasks()
-   } catch (err) {
-    console.error(err)
-   } finally {
-    loading.value = false
-   }
+    try {
+        await taskStore.fetchTasks()
+    } catch (err) {
+        console.error(err)
+    } finally {
+        loading.value = false
+    }
 })
-</script>   
+</script>

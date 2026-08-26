@@ -1,25 +1,22 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Estudar Quasar",
-      "description": "Layout, componentes e Composition API",
-      "term": "2026-08-20",
-      "conclusion": false
-    },
-    {
-      "id": "2",
-      "title": "Configurar Pinia",
-      "description": "Criar store de tarefas e de autenticação",
-      "term": "2026-08-22",
-      "conclusion": false
-    },
-    {
-      "title": "O unico",
-      "description": "Fazer o unico",
+      "title": "Testando 13",
+      "description": "testando minhas taskss",
       "term": "2026-08-11",
       "conclusion": false,
-      "id": "ELRMBsJ1QJE"
+      "authorId": "1",
+      "id": "tOBfY5WO9Tw",
+      "createdAt": "2026-08-25T20:00:00.000Z"
+    },
+    {
+      "title": "Testando 2",
+      "description": "testando 2",
+      "term": "2026-08-11",
+      "conclusion": false,
+      "authorId": "2",
+      "id": "3F6XaSang5M",
+      "createdAt": "2026-08-25T21:00:00.000Z"
     }
   ],
   "users": [
@@ -27,6 +24,12 @@
       "id": "1",
       "name": "user",
       "email": "user@email.com.br",
+      "password": "123456"
+    },
+    {
+      "id": "2",
+      "name": "two",
+      "email": "user.two@email.com.br",
       "password": "123456"
     }
   ],

@@ -5,7 +5,7 @@ export async function login(email: string, password: string): Promise<string> {
     const res = await axiosService(`/users?email:eq=${email}`);
     const users: User[] = res.data;
 
-    const user = users.find((u) => u.password === password);
+    const user = users.find((u) => u.email === email && u.password === password)
 
     if (!user) {
       throw new Error('Invalid email or password');
@@ -17,7 +17,7 @@ export async function login(email: string, password: string): Promise<string> {
     return token;
   }
 
-export function getUser(): {  id: number, name: string } | null {
+export function getUser(): {  id: string, name: string } | null {
   const raw = localStorage.getItem('user')
   return raw ? JSON.parse(raw) : null
 } 

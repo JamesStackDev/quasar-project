@@ -1,7 +1,9 @@
 export interface Task {
-    id: number,
+    id: string,
     title: string,
     description: string,
     term: string,
-    conclusion: boolean
+    conclusion: boolean,
+    authorId: string,
+    createdAt: string
 }

@@ -51,10 +51,10 @@ const linksList: EssentialLinkProps[] = [
     link: '/tasks',
   },
   {
-    label: 'Dashboard',
-    caption: 'Statistic Tasks',
-    icon: 'dashboard',
-    link: '/dashboard',
+    label: 'All Tasks',
+    caption: 'To view all tasks',
+    icon: 'task',
+    link: '/all-tasks',
   },
 ];
 
