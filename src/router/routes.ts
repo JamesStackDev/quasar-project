@@ -21,6 +21,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/AllTasksPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: 'tasks/new',
+        component: () => import('@/pages/TaskFormPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'tasks/:id/edit',
+        component: () => import('@/pages/TaskFormPage.vue'),
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {

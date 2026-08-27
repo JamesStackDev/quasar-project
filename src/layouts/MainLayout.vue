@@ -14,7 +14,10 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+    
+    <MainFooter />
   </q-layout>
+
 </template>
 
 <script setup lang="ts">
@@ -22,6 +25,7 @@ import { ref } from 'vue';
 import EssentialLink, { type EssentialLinkProps } from '@/components/EssentialLink.vue';
 import { useQuasar } from 'quasar';
 import MainHeader from './components/MainHeader.vue';
+import MainFooter from './components/MainFooter.vue';
 
 const $q = useQuasar();
 const miniState = ref(true)

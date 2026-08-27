@@ -5,5 +5,6 @@ export interface Task {
     term: string,
     conclusion: boolean,
     authorId: string,
-    createdAt: string
+    createdAt: string,
+    code: string
 }
