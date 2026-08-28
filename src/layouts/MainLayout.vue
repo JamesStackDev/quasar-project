@@ -4,7 +4,19 @@
     <MainHeader @toggle-drawer="toggleDrawer" />
     <q-drawer v-model="leftDrawerOpen" :mini="miniState" show-if-above bordered>
       <q-list>
-        <q-item-label header> Tasks Acess </q-item-label>
+        <div class="flex items-center justify-between px-2">
+          <q-item-label header>{{ $t('sidebar.title') }}</q-item-label>
+          <q-btn-dropdown flat dense :label="locale.toUpperCase()">
+            <q-list>
+              <q-item clickable v-close-popup @click="locale = 'en-US'"><q-item-section>English</q-item-section></q-item>
+              <q-item clickable v-close-popup
+                @click="locale = 'pt-BR'"><q-item-section>Português</q-item-section></q-item>
+              <q-item clickable v-close-popup @click="locale = 'es-ES'"><q-item-section>Español</q-item-section></q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
+
+        
 
         <EssentialLink v-for="link in linksList" :key="link.label" v-bind="link" />
       </q-list>
@@ -14,7 +26,7 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    
+
     <MainFooter />
   </q-layout>
 
@@ -26,11 +38,12 @@ import EssentialLink, { type EssentialLinkProps } from '@/components/EssentialLi
 import { useQuasar } from 'quasar';
 import MainHeader from './components/MainHeader.vue';
 import MainFooter from './components/MainFooter.vue';
+import { useI18n } from 'vue-i18n';
 
 const $q = useQuasar();
 const miniState = ref(true)
 const leftDrawerOpen = ref(false);
-
+const { locale } = useI18n();
 
 function toggleDrawer() {
   if ($q.screen.gt.xs) {
@@ -43,25 +56,24 @@ function toggleDrawer() {
 
 const linksList: EssentialLinkProps[] = [
   {
-    label: 'Home',
-    caption: 'Home to page',
+    label: 'sidebar.home',
+    caption: 'sidebar.homeCaption',
     icon: 'house',
-    link: '/'
+    link: '/',
   },
   {
-    label: 'Tasks',
-    caption: 'To make tasks',
+    label: 'sidebar.tasks',
+    caption: 'sidebar.tasksCaption',
     icon: 'checklist',
     link: '/tasks',
   },
   {
-    label: 'All Tasks',
-    caption: 'To view all tasks',
+    label: 'sidebar.allTasks',
+    caption: 'sidebar.allTasksCaption',
     icon: 'task',
     link: '/all-tasks',
   },
 ];
-
 
 
 </script>
