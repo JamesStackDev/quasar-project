@@ -1,37 +1,63 @@
 <template>
-    <q-page class="flex items-center justify-center">
-        <q-card style="width: 380px;">
-            <q-card-section class="q-gutter-md">
-                    <h1 class="font-bold justify-center text-3xl text-center">Tasks</h1>
-                <q-form @submit="handleLogin">
-                    <q-input v-model="email" label="Email" type="email" />
-                    <q-input v-model="password" label="Password" type="password"/>
-                    <q-btn type="submit" style="width: 350px;"   class="bg-orange-500 text-white mt-5">Entrar</q-btn>
-                </q-form>
-            </q-card-section>
-        </q-card>
-    </q-page>
+  <q-page class="flex flex-center">
+    <q-card style="width: 380px" class="p-2">
+      <q-card-section>
+        <div class="text-lg font-bold mb-4">Sign in</div>
+
+        <q-form @submit="handleLogin" class="q-gutter-md">
+          <q-input
+            v-model="email"
+            label="Email"
+            type="email"
+            :rules="[
+              val => !!val || 'Email is required',
+              val => /.+@.+\..+/.test(val) || 'Enter a valid email',
+            ]"
+          />
+
+          <q-input
+            v-model="password"
+            label="Password"
+            type="password"
+            :rules="[val => !!val || 'Password is required']"
+          />
+
+          <q-btn
+            type="submit"
+            label="Entrar"
+            color="primary"
+            class="full-width"
+            :loading="isSubmitting"
+            :disable="isSubmitting"
+          />
+        </q-form>
+      </q-card-section>
+    </q-card>
+  </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { login } from '@/services/AuthService';
-import { triggerSuccess, triggerNegative } from '@/utils/Notify';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { login } from '@/services/AuthService'
+import { triggerSuccess, triggerNegative } from '@/utils/Notify'
 
-const email = ref('');
-const password = ref('');
-
-const router = useRouter();
+const email = ref('')
+const password = ref('')
+const isSubmitting = ref(false)
+const router = useRouter()
 
 async function handleLogin() {
-    try {
-        await login(email.value, password.value)
-        triggerSuccess('Login Sucessful')
-        await router.push('/tasks')
-    } catch (err) {
-        const message = err instanceof Error ? err.message: 'Invalid credentials'
-        triggerNegative(message)
-    }
+  isSubmitting.value = true
+  try {
+    await login(email.value, password.value)
+    triggerSuccess('Login successful!')
+    await router.push('/tasks')
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Invalid credentials'
+    triggerNegative(message)
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>

@@ -2,36 +2,41 @@
   <q-page class="p-6">
     <div class="max-w-2xl mx-auto">
       <q-card class="p-6 shadow-2">
-
-        <div class="flex items-center gap-2 mb-6">
-          <q-icon name="edit_note" size="28px" color="primary" />
-          <div class="text-xl font-bold">{{ isEditing ? 'Edit your task' : 'Share a new task' }}</div>
-        </div>
+        <div class="text-xl font-bold mb-6">{{ isEditing ? 'Edit your task' : 'Share a new task' }}</div>
 
         <q-form @submit="handleSubmit" class="q-gutter-lg">
+          <q-input
+            v-model="form.title"
+            label="Title"
+            :rules="[val => !!val || 'Title is required']"
+          />
 
-          <q-input v-model="form.title" label="Title" borderless class="text-h6" placeholder="What's this about?" />
-
-          <q-separator />
-
-          <div>
-            <div class="text-subtitle2 text-grey-8 mb-2">Description</div>
-            <q-input v-model="form.description" type="textarea" outlined autogrow placeholder="Describe it..." />
-          </div>
+          <q-input
+            v-model="form.description"
+            type="textarea"
+            outlined
+            autogrow
+            label="Description"
+            :rules="[val => !!val || 'Description is required']"
+          />
 
           <div>
             <div class="text-subtitle2 text-grey-8 mb-2 flex items-center gap-1">
               <q-icon name="code" /> Code
             </div>
             <textarea
-              v-model="form.description"
+              v-model="form.code"
               rows="8"
               placeholder="Paste your code here..."
               class="w-full bg-grey-9 text-white font-mono text-sm p-4 rounded outline-none"
             ></textarea>
           </div>
 
-          <q-input v-model="form.term" label="Term">
+          <q-input
+            v-model="form.term"
+            label="Term"
+            :rules="[val => !!val || 'Term is required']"
+          >
             <template #append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -45,16 +50,23 @@
             </template>
           </q-input>
 
-          <q-btn type="submit" label="Save" color="primary" class="full-width" size="lg" />
+          <q-btn
+            type="submit"
+            label="Save"
+            color="primary"
+            class="full-width"
+            size="lg"
+            :loading="isSubmitting"
+            :disable="isSubmitting"
+          />
         </q-form>
-
       </q-card>
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTaskStore } from '@/stores/task-store'
 import { getTask } from '@/services/TaskService'
@@ -66,16 +78,18 @@ const router = useRouter()
 const taskStore = useTaskStore()
 
 const isEditing = computed(() => !!route.params.id)
+const isSubmitting = ref(false)
 
 const form = reactive({
   title: '',
   description: '',
-  term: '',
   code: '',
+  term: '',
   conclusion: false,
 })
 
 async function handleSubmit() {
+  isSubmitting.value = true
   try {
     if (isEditing.value) {
       await taskStore.editTask(route.params.id as string, { ...form })
@@ -87,6 +101,8 @@ async function handleSubmit() {
     await router.push('/tasks')
   } catch {
     triggerNegative('Something went wrong')
+  } finally {
+    isSubmitting.value = false
   }
 }
 
