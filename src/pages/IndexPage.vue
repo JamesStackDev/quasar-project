@@ -2,7 +2,7 @@
   <q-page class="p-4">
     <div class="text-xl font-bold mb-4">Dashboard</div>
 
-    <div class="grid grid-cols-4 gap-4 mb-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
       <q-card v-for="stat in stats" :key="stat.label" class="p-4 text-center">
         <q-icon :name="stat.icon" :color="stat.color" size="32px" class="mb-2" />
         <div class="text-h4 font-bold">{{ stat.value }}</div>
@@ -12,8 +12,8 @@
 
     <div class="text-lg font-bold mb-2">Latest Tasks</div>
     <div class="flex overflow-x-auto gap-4 bg-orange-100 p-4 rounded">
-      <q-card v-for="task in recentTasks" :key="task.id" style="min-width: 200px" class="p-4">
-        <div class="font-bold">{{ task.title }}</div>
+      <q-card v-for="task in recentTasks" :key="task.id" style="min-width: 200px; max-width: 200px;" class="p-4">
+        <div class="font-bold truncate">{{ task.title }}</div>
         <div class="text-caption">{{ task.term }}</div>
       </q-card>
     </div>

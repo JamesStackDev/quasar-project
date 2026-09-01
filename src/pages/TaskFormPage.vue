@@ -1,65 +1,77 @@
 <template>
   <q-page class="p-6">
     <div class="max-w-2xl mx-auto">
-      <q-card class="p-6 shadow-2">
-        <div class="text-xl font-bold mb-6">{{ isEditing ? 'Edit your task' : 'Share a new task' }}</div>
-
-        <q-form @submit="handleSubmit" class="q-gutter-lg">
-          <q-input
-            v-model="form.title"
-            label="Title"
-            :rules="[val => !!val || 'Title is required']"
-          />
-
-          <q-input
-            v-model="form.description"
-            type="textarea"
-            outlined
-            autogrow
-            label="Description"
-            :rules="[val => !!val || 'Description is required']"
-          />
-
-          <div>
-            <div class="text-subtitle2 text-grey-8 mb-2 flex items-center gap-1">
-              <q-icon name="code" /> Code
-            </div>
-            <textarea
-              v-model="form.code"
-              rows="8"
-              placeholder="Paste your code here..."
-              class="w-full bg-grey-9 text-white font-mono text-sm p-4 rounded outline-none"
-            ></textarea>
+      <q-card class="shadow-2">
+        <q-card-section class="bg-primary text-white">
+          <div class="text-xl font-bold flex items-center gap-2">
+            <q-icon :name="isEditing ? 'edit' : 'add_circle'" />
+            {{ isEditing ? 'Edit your task' : 'Share a new task' }}
           </div>
+        </q-card-section>
 
-          <q-input
-            v-model="form.term"
-            label="Term"
-            :rules="[val => !!val || 'Term is required']"
-          >
-            <template #append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="form.term" mask="YYYY-MM-DD">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="close" color="negative" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+        <q-card-section class="p-6">
+          <q-form @submit="handleSubmit" class="q-gutter-lg">
+            <q-input
+              v-model="form.title"
+              label="Title"
+              outlined
+              :rules="[val => !!val || 'Title is required']"
+            />
 
-          <q-btn
-            type="submit"
-            label="Save"
-            color="primary"
-            class="full-width"
-            size="lg"
-            :loading="isSubmitting"
-            :disable="isSubmitting"
-          />
-        </q-form>
+            <q-input
+              v-model="form.description"
+              type="textarea"
+              outlined
+              autogrow
+              label="Description"
+              hint="A short summary of the problem"
+              :rules="[val => !!val || 'Description is required']"
+            />
+
+            <q-separator />
+
+            <div>
+              <div class="text-subtitle2 text-grey-8 mb-2 flex items-center gap-1">
+                <q-icon name="code" /> Code
+                <q-space />
+                <span class="text-caption text-grey">{{ form.code.length }} chars</span>
+              </div>
+              <textarea
+                v-model="form.code"
+                rows="8"
+                placeholder="Paste your code here..."
+                class="w-full bg-grey-9 text-white font-mono text-sm p-4 rounded outline-none"
+              ></textarea>
+            </div>
+
+            <q-input v-model="form.term" label="Term" outlined :rules="[val => !!val || 'Term is required']">
+              <template #append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="form.term" mask="YYYY-MM-DD">
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="close" color="negative" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+
+            <div class="flex gap-2">
+              <q-btn flat label="Cancel" class="col" @click="router.back()" />
+              <q-btn
+                type="submit"
+                label="Save"
+                color="primary"
+                class="col"
+                size="lg"
+                :loading="isSubmitting"
+                :disable="isSubmitting"
+              />
+            </div>
+          </q-form>
+        </q-card-section>
       </q-card>
     </div>
   </q-page>

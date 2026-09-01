@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { createTasks, deleteTasks, getAllTasks, updateTasks } from '@/services/TaskService';
 import type { Task } from '@/types/interfaces/Tasks';
-import { getUser } from '@/services/AuthService';
+import { currentUserId} from '@/services/AuthService';
 
 export const useTaskStore = defineStore('task', () => {
   const tasks = ref<Task[]>([]);
@@ -11,7 +11,7 @@ export const useTaskStore = defineStore('task', () => {
     tasks.value = await getAllTasks();
   };
 
-  const myTasks = computed(() => tasks.value.filter((t) => t.authorId === getUser()?.id));
+  const myTasks = computed(() => tasks.value.filter((t) => t.authorId === currentUserId.value))
 
   const addTask = async (task: Omit<Task, 'id' | 'createdAt'>): Promise<void> => {
     const newTask = await createTasks(task);
