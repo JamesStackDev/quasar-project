@@ -1,12 +1,12 @@
-import { franc } from 'franc';
+import { franc } from "franc";
 
-const francToTwoLetter: Record<string, string> = {
+const francTwoLetter: Record<string, string> = {
   por: 'pt',
   eng: 'en',
-  spa: 'es',
-};
+  spa: 'es'
+}
 
 export function detectLanguage(text: string): string {
   const code = franc(text)
-  return francToTwoLetter[code] ?? 'en'
+  return francTwoLetter[code] ?? 'en'
 }

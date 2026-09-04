@@ -13,6 +13,21 @@
         <pre style="white-space: pre-wrap; word-break: break-word;"><code v-html="highlightedCode"></code></pre>
       </div>
     </q-card>
+
+    <q-separator class="my-4" />
+
+    <div class="text-subtitle1 font-bold mb-2">Comments</div>
+
+    <div v-for="comment in commentStore.comments" :key="comment.id" class="mb-3 p-2 bg-grey-2 rounded">
+      <div class="text-body2">{{ comment.content }}</div>
+      <div class="text-caption text-grey">{{ userStore.getAuthorName(comment.authorId) }} · {{ comment.createdAt }}
+      </div>
+    </div>
+
+    <q-form @submit="submitComment" class="flex gap-2 mt-2">
+      <q-input v-model="newComment" placeholder="Write a comment..." dense outlined class="flex-grow" />
+      <q-btn type="submit" label="Send" color="primary" />
+    </q-form>
   </q-page>
 </template>
 
@@ -25,27 +40,43 @@ import hljs from 'highlight.js'
 import { useI18n } from 'vue-i18n'
 import { detectLanguage } from '@/services/LanguageService'
 import { translateText } from '@/services/TranslationService'
+import { useCommentStore } from '@/stores/comment-store'
+import { useUserStore } from '@/stores/user-store'
+
+
 
 const route = useRoute()
 const router = useRouter()
 const task = ref<Task | null>(null)
-const { locale } = useI18n()
+const commentStore = useCommentStore()
+const newComment = ref('')
+const userStore = useUserStore()
+
+const { locale } = useI18n();
 const translatedDescription = ref('')
 
-async function updateTranslation() {
+async function updatedTranslation() {
   if (!task.value) return
+
   const sourceLang = detectLanguage(task.value.description)
   const targetLang = locale.value.slice(0, 2)
   translatedDescription.value = await translateText(task.value.description, sourceLang, targetLang)
 }
 
-watch(locale, updateTranslation)
+async function submitComment() {
+  if (!newComment.value.trim()) return
+  await commentStore.addComment(task.value!.id, newComment.value)
+  newComment.value = ''
+}
+
+watch(locale, updatedTranslation)
 
 onMounted(async () => {
   const id = String(route.params.id)
   task.value = await getTask(id)
   translatedDescription.value = task.value.description
-  await updateTranslation()
+  await updatedTranslation()
+  await commentStore.fetchComments(id)
 })
 
 const highlightedCode = computed(() => hljs.highlightAuto(task.value?.code ?? '').value)
