@@ -15,7 +15,7 @@
               <q-btn flat round dense icon="delete" color="negative" @click="askDelete(props.row.id)" />
             </div>
           </div>
-          <p class="text-body2">{{ props.row.description }}</p>
+          <p class="text-body2">{{ props.row.description[locale] ?? 'No translation yet' }}</p>
           <div class="flex justify-between text-caption text-grey">
             <span>Term: {{ props.row.term }}</span>
             <span>Author: {{ userStore.getAuthorName(props.row.authorId) }}</span>
@@ -45,6 +45,7 @@ import type { QTableColumn } from 'quasar';
 import { triggerNegative, triggerSuccess } from '@/utils/Notify';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user-store';
+import { useI18n } from 'vue-i18n';
 
 const taskStore = useTaskStore();
 const userStore = useUserStore();
@@ -53,6 +54,8 @@ const route = useRoute()
 const router = useRouter()
 const confirmDeleteOpen = ref(false)
 const deletingId = ref<string | null>(null)
+
+const { locale } = useI18n();
 
 async function goToDetail(id: string) {
     await router.push(`/tasks/${id}`)

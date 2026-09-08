@@ -11,22 +11,10 @@
 
         <q-card-section class="p-6">
           <q-form @submit="handleSubmit" class="q-gutter-lg">
-            <q-input
-              v-model="form.title"
-              label="Title"
-              outlined
-              :rules="[val => !!val || 'Title is required']"
-            />
+            <q-input v-model="form.title" label="Title" outlined :rules="[val => !!val || 'Title is required']" />
 
-            <q-input
-              v-model="form.description"
-              type="textarea"
-              outlined
-              autogrow
-              label="Description"
-              hint="A short summary of the problem"
-              :rules="[val => !!val || 'Description is required']"
-            />
+            <q-input v-model="form.description" type="textarea" outlined autogrow label="Description"
+              hint="A short summary of the problem" :rules="[val => !!val || 'Description is required']" />
 
             <q-separator />
 
@@ -36,12 +24,8 @@
                 <q-space />
                 <span class="text-caption text-grey">{{ form.code.length }} chars</span>
               </div>
-              <textarea
-                v-model="form.code"
-                rows="8"
-                placeholder="Paste your code here..."
-                class="w-full bg-grey-9 text-white font-mono text-sm p-4 rounded outline-none"
-              ></textarea>
+              <textarea v-model="form.code" rows="8" placeholder="Paste your code here..."
+                class="w-full bg-grey-9 text-white font-mono text-sm p-4 rounded outline-none"></textarea>
             </div>
 
             <q-input v-model="form.term" label="Term" outlined :rules="[val => !!val || 'Term is required']">
@@ -60,15 +44,8 @@
 
             <div class="flex gap-2">
               <q-btn flat label="Cancel" class="col" @click="router.back()" />
-              <q-btn
-                type="submit"
-                label="Save"
-                color="primary"
-                class="col"
-                size="lg"
-                :loading="isSubmitting"
-                :disable="isSubmitting"
-              />
+              <q-btn type="submit" label="Save" color="primary" class="col" size="lg" :loading="isSubmitting"
+                :disable="isSubmitting" />
             </div>
           </q-form>
         </q-card-section>
@@ -84,10 +61,14 @@ import { useTaskStore } from '@/stores/task-store'
 import { getTask } from '@/services/TaskService'
 import { getUser } from '@/services/AuthService'
 import { triggerSuccess, triggerNegative } from '@/utils/Notify'
+import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
 const router = useRouter()
 const taskStore = useTaskStore()
+
+const { locale } = useI18n()
+const originalDescription = ref<Record<string, string>>({})
 
 const isEditing = computed(() => !!route.params.id)
 const isSubmitting = ref(false)
@@ -100,28 +81,42 @@ const form = reactive({
   conclusion: false,
 })
 
+
+
 async function handleSubmit() {
   isSubmitting.value = true
   try {
     if (isEditing.value) {
-      await taskStore.editTask(route.params.id as string, { ...form })
+      await taskStore.editTask(route.params.id as string, {
+        ...form,
+        description: { ...originalDescription.value, [locale.value]: form.description },
+      })
       triggerSuccess('Task updated!')
-    } else {
-      await taskStore.addTask({ ...form, authorId: getUser()!.id })
-      triggerSuccess('Task created!')
-    }
-    await router.push('/tasks')
-  } catch {
-    triggerNegative('Something went wrong')
-  } finally {
-    isSubmitting.value = false
+  } else {
+    await taskStore.addTask({
+      ...form,
+      description: { [locale.value]: form.description },
+      authorId: getUser()!.id,
+    })
+    triggerSuccess('Task created!')
   }
+  await router.push('/tasks')
+} catch {
+  triggerNegative('Something went wrong')
+} finally {
+  isSubmitting.value = false
+}
 }
 
 onMounted(async () => {
   if (isEditing.value) {
     const existing = await getTask(route.params.id as string)
-    Object.assign(form, existing)
+    originalDescription.value = existing.description
+    form.title = existing.title
+    form.description = existing.description[locale.value] ?? ''
+    form.code = existing.code
+    form.term = existing.term
+    form.conclusion = existing.conclusion
   }
 })
 </script>
