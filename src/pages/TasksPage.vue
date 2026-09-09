@@ -5,7 +5,8 @@
       <q-btn label="New Task" color="primary" @click="router.push('/tasks/new')" />
     </div>
 
-    <q-table :rows="taskStore.myTasks" :columns="columns" row-key="id" :loading="loading" :filter="search" grid hide-header>
+    <q-table :rows="taskStore.myTasks" :columns="columns" row-key="id" :loading="loading" :filter="search" grid
+      hide-header>
       <template #item="props">
         <q-card class="w-full mb-4 p-4 cursor-pointer" @click="goToDetail(props.row.id)">
           <div class="flex justify-between items-start">
@@ -15,7 +16,9 @@
               <q-btn flat round dense icon="delete" color="negative" @click="askDelete(props.row.id)" />
             </div>
           </div>
-          <p class="text-body2">{{ props.row.description[locale] ?? 'No translation yet' }}</p>
+          <p class="text-body2">
+            {{ props.row.description }}
+          </p>
           <div class="flex justify-between text-caption text-grey">
             <span>Term: {{ props.row.term }}</span>
             <span>Author: {{ userStore.getAuthorName(props.row.authorId) }}</span>
@@ -25,7 +28,7 @@
       </template>
     </q-table>
 
-    
+
     <q-dialog v-model="confirmDeleteOpen">
       <q-card class="p-4">
         <div class="text-lg font-bold mb-4">Delete this task?</div>
@@ -45,7 +48,7 @@ import type { QTableColumn } from 'quasar';
 import { triggerNegative, triggerSuccess } from '@/utils/Notify';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user-store';
-import { useI18n } from 'vue-i18n';
+
 
 const taskStore = useTaskStore();
 const userStore = useUserStore();
@@ -55,15 +58,14 @@ const router = useRouter()
 const confirmDeleteOpen = ref(false)
 const deletingId = ref<string | null>(null)
 
-const { locale } = useI18n();
 
 async function goToDetail(id: string) {
-    await router.push(`/tasks/${id}`)
+  await router.push(`/tasks/${id}`)
 }
 
 function askDelete(id: string) {
-    deletingId.value = id
-    confirmDeleteOpen.value = true
+  deletingId.value = id
+  confirmDeleteOpen.value = true
 }
 
 async function confirmDelete() {
@@ -79,19 +81,19 @@ async function confirmDelete() {
 const search = ref((route.query.q as string) || '')
 
 watch(
-    () => route.query.q,
-    (newValue) => {
-        search.value = (newValue as string) || ''
-    }
+  () => route.query.q,
+  (newValue) => {
+    search.value = (newValue as string) || ''
+  }
 )
 
 
 const columns: QTableColumn[] = [
-    { name: 'title', label: 'Title', field: 'title', align: 'left', sortable: true },
-    { name: 'description', label: 'Description', field: 'description', align: 'left' },
-    { name: 'term', label: 'Term', field: 'term', align: 'left', sortable: true },
-    { name: 'conclusion', label: 'Done', field: 'conclusion', align: 'left' },
-    { name: 'actions', label: 'Actions', field: 'id', align: 'center' },
+  { name: 'title', label: 'Title', field: 'title', align: 'left', sortable: true },
+  { name: 'description', label: 'Description', field: 'description', align: 'left' },
+  { name: 'term', label: 'Term', field: 'term', align: 'left', sortable: true },
+  { name: 'conclusion', label: 'Done', field: 'conclusion', align: 'left' },
+  { name: 'actions', label: 'Actions', field: 'id', align: 'center' },
 ]
 
 
@@ -99,13 +101,13 @@ const columns: QTableColumn[] = [
 
 
 onMounted(async () => {
-    try {
-        await taskStore.fetchTasks()
-        await userStore.fetchUsers()
-    } catch (err) {
-        console.error(err)
-    } finally {
-        loading.value = false
-    }
+  try {
+    await taskStore.fetchTasks()
+    await userStore.fetchUsers()
+  } catch (err) {
+    console.error(err)
+  } finally {
+    loading.value = false
+  }
 })
 </script>

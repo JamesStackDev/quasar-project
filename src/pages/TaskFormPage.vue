@@ -63,15 +63,16 @@ import { getUser } from '@/services/AuthService'
 import { triggerSuccess, triggerNegative } from '@/utils/Notify'
 import { useI18n } from 'vue-i18n'
 
+
 const route = useRoute()
 const router = useRouter()
 const taskStore = useTaskStore()
 
-const { locale } = useI18n()
-const originalDescription = ref<Record<string, string>>({})
 
 const isEditing = computed(() => !!route.params.id)
 const isSubmitting = ref(false)
+
+const { locale } = useI18n()
 
 const form = reactive({
   title: '',
@@ -79,6 +80,7 @@ const form = reactive({
   code: '',
   term: '',
   conclusion: false,
+  locale: '',
 })
 
 
@@ -87,35 +89,40 @@ async function handleSubmit() {
   isSubmitting.value = true
   try {
     if (isEditing.value) {
-      await taskStore.editTask(route.params.id as string, {
-        ...form,
-        description: { ...originalDescription.value, [locale.value]: form.description },
-      })
+      await taskStore.editTask(
+        route.params.id as string,
+        {
+          ...form,
+          description: form.description,
+        }
+      )
       triggerSuccess('Task updated!')
-  } else {
-    await taskStore.addTask({
-      ...form,
-      description: { [locale.value]: form.description },
-      authorId: getUser()!.id,
-    })
-    triggerSuccess('Task created!')
+    } else {
+      await taskStore.addTask({
+        ...form,
+        authorId: getUser()!.id,
+        locale: locale.value,
+      })
+      triggerSuccess('Task created!')
+    }
+    await router.push('/tasks')
+  } catch {
+    triggerNegative('Something went wrong')
+  } finally {
+    isSubmitting.value = false
   }
-  await router.push('/tasks')
-} catch {
-  triggerNegative('Something went wrong')
-} finally {
-  isSubmitting.value = false
-}
 }
 
 onMounted(async () => {
   if (isEditing.value) {
-    const existing = await getTask(route.params.id as string)
-    originalDescription.value = existing.description
+    const existing = await getTask(
+      route.params.id as string
+    )
     form.title = existing.title
-    form.description = existing.description[locale.value] ?? ''
+    form.description = existing.description
     form.code = existing.code
     form.term = existing.term
+    form.locale = existing.locale
     form.conclusion = existing.conclusion
   }
 })
