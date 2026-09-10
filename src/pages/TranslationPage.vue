@@ -4,7 +4,7 @@
             <q-card class="shadow-2">
                 <q-card-section class="bg-primary text-white">
                     <div class="text-xl font-bold">
-                        Contribute translation
+                        {{ isEditing ? 'Edit translation' : 'Contribute translation' }}
                     </div>
                 </q-card-section>
 
@@ -30,8 +30,8 @@
                     <div class="flex gap-2 q-mt-lg">
                         <q-btn flat label="Cancel" class="col" @click="router.back()" />
 
-                        <q-btn label="Submit translation" color="primary" class="col" :loading="isSubmitting"
-                            :disable="isSubmitting" @click="submitTranslation" />
+                        <q-btn :label="isEditing ? 'Save changes' : 'Submit translation'" color="primary" class="col"
+                            :loading="isSubmitting" :disable="isSubmitting" @click="submitTranslation" />
                     </div>
                 </q-card-section>
             </q-card>
@@ -46,7 +46,11 @@ import { useI18n } from 'vue-i18n'
 import { getTask } from '@/services/TaskService'
 import { getUser } from '@/services/AuthService'
 import type { Task } from '@/types/interfaces/Tasks'
-import { createTranslations } from '@/services/TranslationSerivces'
+import {
+    createTranslations,
+    getTranslation,
+    updateTranslations
+} from '@/services/TranslationSerivces'
 
 import {
     triggerSuccess,
@@ -62,11 +66,21 @@ const { locale } = useI18n()
 const task = ref<Task | null>(null)
 const text = ref('')
 const isSubmitting = ref(false)
+const isEditing = ref(false)
 
 onMounted(async () => {
     const taskId = String(route.params.taskId)
+    const translationId = route.params.translationId
 
     task.value = await getTask(taskId)
+
+    if (translationId) {
+        isEditing.value = true
+
+        const translation = await getTranslation(String(translationId))
+
+        text.value = translation.text
+    }
 })
 
 async function submitTranslation() {
@@ -78,22 +92,35 @@ async function submitTranslation() {
     isSubmitting.value = true
 
     try {
-        await createTranslations({
-            id: crypto.randomUUID(),
-            taskId: String(route.params.taskId),
-            locale: locale.value,
-            text: text.value,
-            authorId: getUser()!.id
-        })
+        const taskId = String(route.params.taskId)
+        const translationId = route.params.translationId
 
-        triggerSuccess('Translation submitted!')
+        if (isEditing.value && translationId) {
+            await updateTranslations(String(translationId), {
+                text: text.value
+            })
+        } else {
+            await createTranslations({
+                id: crypto.randomUUID(),
+                taskId,
+                locale: locale.value,
+                text: text.value,
+                authorId: getUser()!.id
+            })
+        }
 
-        await router.push(
-            `/tasks/${route.params.taskId}`
+        triggerSuccess(
+            isEditing.value
+                ? 'Translation updated!'
+                : 'Translation submitted!'
         )
+
+        await router.push(`/tasks/${taskId}`)
     } catch {
         triggerNegative(
-            'Could not submit translation'
+            isEditing.value
+                ? 'Could not update translation'
+                : 'Could not submit translation'
         )
     } finally {
         isSubmitting.value = false

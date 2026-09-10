@@ -21,6 +21,7 @@ export async function login(email: string, password: string): Promise<string> {
   return token;
 }
 
+
 export function getUser(): { id: string; name: string } | null {
   const raw = localStorage.getItem('user');
   return raw ? JSON.parse(raw) : null;
@@ -34,4 +35,10 @@ export function logout(): void {
 
 export function getToken(): string | null {
   return localStorage.getItem('token');
+}
+
+export async function getAuthorName(id: string): Promise<string> {
+  const res = await axiosService.get(`/users/${id}`)
+
+  return res.data?.name ?? 'Unknown'
 }

@@ -19,6 +19,13 @@
       "locale": "en-US",
       "text": "Hello world",
       "authorId": "2"
+    },
+    {
+      "id": "h5P7MyGU-Do",
+      "taskId": "lLv0VtgC0FY",
+      "locale": "es-ES",
+      "text": "Me llamo Pedro y soy el héroe más fuerte.",
+      "authorId": "1"
     }
   ],
   "users": [
