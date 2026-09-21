@@ -46,10 +46,13 @@ const router = useRouter();
 const $q = useQuasar();
 
 function toggleDarkMode() {
-    $q.dark.toggle()
-    document.documentElement.classList.toggle('dark', $q.dark.isActive)
-}
+  $q.dark.toggle()
 
+  localStorage.setItem(
+    'darkMode',
+    String($q.dark.isActive)
+  )
+}
 
 async function handleSearch() {
     await router.push({ path: '/tasks', query: { q: searchTerm.value } })

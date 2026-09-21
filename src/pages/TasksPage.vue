@@ -8,11 +8,17 @@
     <q-table :rows="taskStore.myTasks" :columns="columns" row-key="id" :loading="loading" :filter="search" grid
       hide-header>
       <template #item="props">
-        <q-card class="w-full mb-4 p-4 cursor-pointer" @click="goToDetail(props.row.id)">
+        <q-card class="post-card w-full mb-4 p-4">
           <div class="flex justify-between items-start">
-            <div class="text-primary font-bold text-lg">{{ props.row.title }}</div>
+            <div>
+              <router-link :to="`/tasks/${props.row.id}`" class="post-title-link">
+                {{ props.row.title }}
+              </router-link>
+            </div>
+
             <div @click.stop>
               <q-btn flat round dense icon="edit" @click="router.push(`/tasks/${props.row.id}/edit`)" />
+
               <q-btn flat round dense icon="delete" color="negative" @click="askDelete(props.row.id)" />
             </div>
           </div>
@@ -59,9 +65,7 @@ const confirmDeleteOpen = ref(false)
 const deletingId = ref<string | null>(null)
 
 
-async function goToDetail(id: string) {
-  await router.push(`/tasks/${id}`)
-}
+
 
 function askDelete(id: string) {
   deletingId.value = id

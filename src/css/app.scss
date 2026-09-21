@@ -1,5 +1,19 @@
+@import './quasar.variables.scss';
+@import './theme.scss';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @import 'highlight.js/styles/atom-one-dark.css';
+
+.post-title-link {
+  color: var(--app-link);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.post-title-link:hover {
+  opacity: 0.8;
+}
+

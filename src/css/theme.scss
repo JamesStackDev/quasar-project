@@ -1,0 +1,32 @@
+body.body--dark {
+  --app-background: red;
+  --app-surface: #1d1d1d;
+  --app-text: #ffffff;
+  --app-text-secondary: #bdbdbd;
+  --app-border: #333333;
+  --app-primary: #64b5f6;
+  --app-link: #8ab4f8;
+}
+
+body {
+  background: var(--app-background);
+  color: var(--app-text);
+}
+
+.post-card {
+  background: var(--app-surface);
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
+}
+
+.post-title-link {
+  color: var(--app-link);
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.post-title-link:hover {
+  opacity: 0.8;
+}
+

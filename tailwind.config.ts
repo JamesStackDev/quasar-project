@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 export default {
-  darkMode: 'class',
+  darkMode: ['class', 'body.body--dark'],
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     screens: {
@@ -14,11 +14,14 @@ export default {
 
     extend: {
       colors: {
-        primary: '#1976d2',
-        secondary: '#26a69a',
-        accent: '#9c27b0',
-        dark: '#1d1d1d',
-        'dark-page': '#121212',
+        primary: 'var(--app-primary)',
+        secondary: 'var(--app-secondary)',
+        background: 'var(--app-background)',
+        surface: 'var(--app-surface)',
+        text: 'var(--app-text)',
+        'text-secondary': 'var(--app-text-secondary)',
+        border: 'var(--app-border)',
+        link: 'var(--app-link)',
         positive: '#21ba45',
         negative: '#c10015',
         info: '#31ccec',
