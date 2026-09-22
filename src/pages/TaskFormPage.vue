@@ -42,6 +42,20 @@
               </template>
             </q-input>
 
+            <div>
+              <div class="text-base text-gray-500 mb-2 ">Tags</div>
+              <div class="flex flex-wrap gap-2 mb-2">
+                <q-chip v-for="(tags, index) in form.tags" :key="tags" removable color="primary" text-color="white"
+                  @remove="form.tags.splice(index, 1)">
+                  {{ tags }}
+                </q-chip>
+
+                <q-input v-model="newTag" label="Add a tag and press Enter" dense outlined
+                  @keydown.enter.prevent="addTag" />
+                <q-btn @click="addTag">Add</q-btn>
+              </div>
+            </div>
+
             <div class="flex gap-2">
               <q-btn flat label="Cancel" class="col" @click="router.back()" />
               <q-btn type="submit" label="Save" color="primary" class="col" size="lg" :loading="isSubmitting"
@@ -69,8 +83,11 @@ const router = useRouter()
 const taskStore = useTaskStore()
 
 
+
 const isEditing = computed(() => !!route.params.id)
 const isSubmitting = ref(false)
+
+const newTag = ref('')
 
 const { locale } = useI18n()
 
@@ -79,11 +96,23 @@ const form = reactive({
   description: '',
   code: '',
   term: '',
+  tags: [] as string[],
   conclusion: false,
   locale: '',
 })
 
+function addTag() {
+  const value = newTag.value.trim()
+  if(!value) return
 
+  const tag = value.startsWith('#') ? value : `#${value}`
+
+  if(!form.tags.includes(tag)) {
+    form.tags.push(tag)
+  }
+
+  newTag.value = ''
+}
 
 async function handleSubmit() {
   isSubmitting.value = true
@@ -93,7 +122,7 @@ async function handleSubmit() {
         route.params.id as string,
         {
           ...form,
-          description: form.description,
+          description: form.description, 
         }
       )
       triggerSuccess('Task updated!')

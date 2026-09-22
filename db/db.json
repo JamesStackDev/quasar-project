@@ -9,7 +9,12 @@
       "authorId": "1",
       "createdAt": "2026-09-08T10:08:27.063Z",
       "id": "lLv0VtgC0FY",
-      "locale": "pt-BR"
+      "locale": "pt-BR",
+      "tags": [
+        "#teste",
+        "#vue",
+        "#pembolin"
+      ]
     }
   ],
   "translations": [
@@ -42,8 +47,6 @@
       "password": "123456"
     }
   ],
-  "comments": [
-
-  ],
+  "comments": [],
   "$schema": "./node_modules/json-server/schema.json"
 }

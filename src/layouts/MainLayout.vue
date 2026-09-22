@@ -2,21 +2,26 @@
   <q-layout view="lHh Lpr lFf">
 
     <MainHeader @toggle-drawer="toggleDrawer" />
-    <q-drawer v-model="leftDrawerOpen" :mini="miniState" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" :mini="miniState" bordered>
+      <div v-if="$q.screen.gt.xs" class="flex justify-end p-1">
+        <q-btn flat dense round :icon="miniState ? 'chevron_right' : 'chevron_left'" @click="toggleMini" />
+      </div>
       <q-list>
-        <div class="flex items-center justify-between px-2">
+        <nav class="flex items-center justify-between px-2">
           <q-item-label header>{{ $t('sidebar.title') }}</q-item-label>
           <q-btn-dropdown flat dense :label="locale.toUpperCase()">
             <q-list>
-              <q-item clickable v-close-popup @click="locale = 'en-US'"><q-item-section>English</q-item-section></q-item>
+              <q-item clickable v-close-popup
+                @click="locale = 'en-US'"><q-item-section>English</q-item-section></q-item>
               <q-item clickable v-close-popup
                 @click="locale = 'pt-BR'"><q-item-section>Português</q-item-section></q-item>
-              <q-item clickable v-close-popup @click="locale = 'es-ES'"><q-item-section>Español</q-item-section></q-item>
+              <q-item clickable v-close-popup
+                @click="locale = 'es-ES'"><q-item-section>Español</q-item-section></q-item>
             </q-list>
           </q-btn-dropdown>
-        </div>
+        </nav>
 
-        
+
 
         <EssentialLink v-for="link in linksList" :key="link.label" v-bind="link" />
       </q-list>
@@ -42,15 +47,15 @@ import { useI18n } from 'vue-i18n';
 
 const $q = useQuasar();
 const miniState = ref(true)
-const leftDrawerOpen = ref(false);
+const leftDrawerOpen = ref($q.screen.gt.xs)
 const { locale } = useI18n();
 
+function toggleMini() {
+  miniState.value = !miniState.value
+}
+
 function toggleDrawer() {
-  if ($q.screen.gt.xs) {
-    miniState.value = !miniState.value
-  } else {
-    leftDrawerOpen.value = !leftDrawerOpen.value
-  }
+  leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
 

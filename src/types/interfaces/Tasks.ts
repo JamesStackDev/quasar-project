@@ -1,11 +1,12 @@
 export interface Task {
-  id: string
-  title: string
-  description: string
-  term: string
-  conclusion: boolean
-  authorId: string
-  createdAt: string
-  code: string
-  locale: string
+  id: string;
+  title: string;
+  description: string;
+  term: string;
+  conclusion: boolean;
+  authorId: string;
+  tags: string[];
+  createdAt: string;
+  code: string;
+  locale: string;
 }

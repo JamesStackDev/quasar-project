@@ -11,18 +11,18 @@
         <q-table :rows="filteredTasks" :columns="columns" row-key="id" :loading="loading" grid hide-header>
             <template #item="props">
                 <q-card class="post-card w-full mb-4 p-4">
-                  <router-link
-  :to="`/tasks/${props.row.id}`"
-  class="post-title-link"
->
-  {{ props.row.title }}
-</router-link>
+                    <router-link :to="`/tasks/${props.row.id}`" class="post-title-link">
+                        {{ props.row.title }}
+                    </router-link>
 
-<p>{{ props.row.description }}</p>
+                    <p>{{ props.row.description }}</p>
 
-<div class="post-category">
-  #{{ props.row.category }}
-</div>
+                    <div class="flex flex-wrap gap-1 mt-2">
+                        <q-chip v-for="tags in props.row.tags" :key="tags" dense size="sm" color="primary"
+                            text-color="white">
+                            {{ tags }}
+                        </q-chip>
+                    </div>
                 </q-card>
             </template>
         </q-table>
