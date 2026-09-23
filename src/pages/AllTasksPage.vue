@@ -1,5 +1,5 @@
 <template>
-    <q-page class="p-4">
+    <q-page class="p-4 page-container">
         <div class="text-xl font-bold mb-4">All Tasks</div>
         <q-tabs v-model="activeTab" dense class="mb-4" align="left">
             <q-tab name="all" label="Todas" />

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="p-4">
+  <q-page class="p-4 page-container">
     <q-btn flat icon="arrow_back" label="Back" @click="router.back()" class="mb-4" />
 
     <q-card class="p-6" v-if="task">

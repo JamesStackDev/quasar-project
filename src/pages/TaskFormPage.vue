@@ -1,5 +1,5 @@
 <template>
-  <q-page class="p-6">
+  <q-page class="p-6 page-container">
     <div class="max-w-2xl mx-auto">
       <q-card class="shadow-2">
         <q-card-section class="bg-primary text-white">

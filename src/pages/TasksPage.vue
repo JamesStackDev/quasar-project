@@ -1,5 +1,5 @@
 <template>
-  <q-page class="p-4">
+  <q-page class="p-4 page-container">
     <div class="flex justify-between items-center mb-4">
       <div class="text-xl font-bold">Tasks</div>
       <q-btn label="New Task" color="primary" @click="router.push('/tasks/new')" />

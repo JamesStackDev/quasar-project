@@ -17,3 +17,24 @@
   opacity: 0.8;
 }
 
+.page-container {
+  padding: 1rem;
+}
+
+.app-dialog {
+  width: 500px;
+  max-width: 90vw;
+}
+
+@media (max-width: 599px) {
+  .q-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (min-width: 600px) {
+  .page-container {
+    padding: 1.5rem;
+  }
+}

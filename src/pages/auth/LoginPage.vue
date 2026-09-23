@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="flex flex-center page-container">
     <q-card style="width: 380px" class="p-2">
       <q-card-section>
         <div class="text-lg font-bold mb-4">Sign in</div>
